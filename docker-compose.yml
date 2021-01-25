@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  builder:
+    image: 'express_concurrency_app:latest'
+    build:
+      context: .
+    command: "echo 'done'"
+    deploy:
+      restart_policy:
+        condition: none
+  app_normal:
+    image: 'express_concurrency_app:latest'
+    depends_on: 
+      - builder
+    command: "node index.js"
+    environment: 
+      DISABLE_MOCK_API_CALL: ${DISABLE_MOCK_API_CALL}
+    ports:
+      - '8080:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: "${APP_NORMAL_CPU_LIMIT}"
+          memory: "1500M"
+        reservations:
+          memory: "500M"
+  app_child_process:
+    image: 'express_concurrency_app:latest'
+    depends_on: 
+      - builder
+    command: "node index_using_runner.js"
+    environment: 
+      DISABLE_MOCK_API_CALL: ${DISABLE_MOCK_API_CALL}
+    ports:
+      - '8081:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: "${APP_CHILD_PROCESS_CPU_LIMIT}"
+          memory: "1500M"
+        reservations:
+          memory: "500M"
+  app_child_process_pool_1:
+    image: 'express_concurrency_app:latest'
+    depends_on: 
+      - builder
+    command: "node index_using_pool_runner.js"
+    environment: 
+      TOTAL_RUNNERS: 1
+      DISABLE_MOCK_API_CALL: ${DISABLE_MOCK_API_CALL}
+    ports:
+      - '8082:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: "${APP_CHILD_PROCESS_POOL_1_CPU_LIMIT}"
+          memory: "1500M"
+        reservations:
+          memory: "500M"
+  app_child_process_pool_n:
+    image: 'express_concurrency_app:latest'
+    depends_on: 
+      - builder
+    command: "node index_using_pool_runner.js"
+    environment: 
+      TOTAL_RUNNERS: ${APP_CHILD_PROCESS_POOL_N_TOTAL_WORKERS}
+      DISABLE_MOCK_API_CALL: ${DISABLE_MOCK_API_CALL}
+    ports:
+      - '8083:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: "${APP_CHILD_PROCESS_POOL_N_CPU_LIMIT}"
+          memory: "1500M"
+        reservations:
+          memory: "500M"
+
+volumes: 
+  node_modules:

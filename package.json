@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "node index.js",
+    "loadtest": "node load_test.js",
+    "run-scenario-1": "docker-compose down && cp .env-scenario-1 .env && docker-compose up --build --force-recreate",
+    "run-scenario-2": "docker-compose down && cp .env-scenario-2 .env && docker-compose up --build --force-recreate",
+    "run-scenario-3": "docker-compose down && cp .env-scenario-3 .env && docker-compose up --build --force-recreate",
+    "run-scenario-4": "docker-compose down && cp .env-scenario-4 .env && docker-compose up --build --force-recreate"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "connect-timeout": "^1.9.0",
+    "express": "^4.17.1"
+  }
+}
