@@ -13,7 +13,7 @@ yarn
 ```
 
 ## Run servers
-- Activate scenario (1-4)
+- Activate scenario (1-9)
   format:
   ```
   yarn run run-scenario-n
